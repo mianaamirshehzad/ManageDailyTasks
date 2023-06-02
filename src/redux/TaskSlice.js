@@ -1,26 +1,38 @@
 import { createSlice } from '@reduxjs/toolkit'
 import showToast from '../components/Toast';
 
-
-// Slice Name with string to identify, an initial state, and object of reducers
-export const tasksSlice = createSlice({
-  name: 'counter',
-  initialState: [],
-  reducers: {
-    addTask: (state, action) => {
-      state.push(action.payload);
-      return state;
+const initialState = [
+    {
+      id: 0,
+      text: "Learn React",
+      completed: false
     },
-    deleteTask: (state, action) => {
-      return state.filter((item, index) => index !== action.payload); //Needs improvement w.r.t performance
+    {
+      id: 1,
+      text: "Learn React Native ",
+      completed: false
     },
-    updateTask: (state, action) => {
-      let index = state.findIndex(j => j.index == state.payload )
-      console.log(index);
+    {
+      id: 2,
+      text: "Learn Nodejs and Python",
+      completed: true
     }
+  ]
+
+
+export default function appReducer(state = initialState, action) {
+  switch (action.type) {
+    case "ADD_NEW_TASK":
+      return {
+        ...state,
+        todos: [
+          ...state.todos,
+          {
+            id: nextTodoId(state.todos),
+            text: action.payload,
+            completed: false
+          }
+        ]
+      }
   }
-})
-
-
-export const { addTask, deleteTask, updateTask } = tasksSlice.actions;
-export default tasksSlice.reducer;
+}

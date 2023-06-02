@@ -4,35 +4,59 @@ import { addTask, deleteTask, updateTask } from '../redux/TaskSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import TaskView from '../components/TaskView';
+import CustomModalView from '../components/CustomModal';
+import { addNewTask } from '../redux/Actions';
+
 
 export default function ToDo(props) {
     const [task, setTask] = useState("");
+    const [taskList, setTaskList] = useState([]);
+    const [show, setShow] = useState(false);
+    const [updateTask, setUpdateTask] = useState("");
     const dispatch = useDispatch();
     const todos = useSelector(state => state.counter)
-    console.log(todos);
 
-    const addTaskHandler = () => {
+    const addTask = async () => {
+        Keyboard.dismiss();
+        console.log(task)
         if (task) {
-            Keyboard.dismiss();
-            dispatch(addTask(task));
+            setTaskList([...taskList, task]); //ES6
         } else {
-            alert("Empty field")
+            alert("Please enter a task");
         }
         setTask(null); //This will empty the textbox
+        console.log(taskList);
+        dispatch(addNewTask(taskList));
     };
-    const deleteHandler = (index) => {
-        dispatch(deleteTask(index));
-    };
-    const updateHandler = (index) => {
-        dispatch(updateTask(index))  ;
-    }
 
-    const markTaskAsComplete = (index) => {
-        let itemsCopy = [...taskList];
-        itemsCopy.splice(index, 1);
-        setTaskList(itemsCopy);
-        console.log('Task marked as done')
-    };
+
+    // const addTaskHandler = () => {
+    //     if (task) {
+    //         Keyboard.dismiss();
+    //         if (taskList !== null) {
+    //             taskList.push(task)
+    //         } else {
+    //             setTaskList(task);
+    //         }
+    //     } else {
+    //         alert("Empty field")
+    //     }
+    //     setTask(null); //This will empty the textbox
+    //     console.log(taskList);
+    // };
+    // const deleteHandler = (index) => {
+    //     dispatch(deleteTask(index));
+    // };
+    // const updateHandler = (index) => {
+    //     dispatch(updateTask(index));
+    // }
+
+    // const markTaskAsComplete = (index) => {
+    //     let itemsCopy = [...taskList];
+    //     itemsCopy.splice(index, 1);
+    //     setTaskList(itemsCopy);
+    //     console.log('Task marked as done')
+    // };
 
 
     return (
@@ -49,9 +73,9 @@ export default function ToDo(props) {
                         alwaysBounceVertical={true}
                     >
                         {todos.map((item, index) => (
-                            <TaskView text = {item} key = {item}
-                                onLongPress = {() => deleteHandler(index)}
-                                onPress = {()=> updateHandler(index)} />
+                            <TaskView text={item} key={item}
+                                onLongPress={() => deleteHandler(index)}
+                                onPress={() => updateHandler(index)} />
                         ))}
                     </ScrollView>
 
@@ -69,7 +93,7 @@ export default function ToDo(props) {
                     value={task}
                     style={styles.input} />
                 <TouchableOpacity
-                    onPress={() => addTaskHandler(task)} >
+                    onPress={() => addTask(task)} >
                     <View style={styles.addWrapper} >
                         <Text style={styles.addText} >
                             +

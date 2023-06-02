@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TextInput, Modal, TouchableOpacity, Image } from 'react-native';
-import CustomButton from './CustomButton';
 import CustomTextInput from './CustomTextInput';
+import CustomButton from './CustomButton';
 
 const CustomModalView = (props) => {
     const [update, setUpdate] = useState("")
@@ -18,12 +18,12 @@ const CustomModalView = (props) => {
                     />
                 </TouchableOpacity>
                 <Text style={styles.title} >
-                    Update Grocery Item
+                    Update task
                 </Text>
                 <CustomTextInput
                     placeholder='Type here...'
                     onChangeText={props.onChangeText} />
-                <CustomButton text="Update Item"
+                <CustomButton text="Update"
                     onPress={props.onPress} />
             </View>
         </Modal>
