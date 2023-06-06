@@ -1,15 +1,21 @@
-import { ADD_NEW_TASK } from "./Constants";
+import { ADD_NEW_TASK, DELETE_TASK } from "./Constants";
 
-export const addNewTask = (a) => {
+export const addNewTask = (payload) => {
   return {
-    type: 'ADD_NEW_TASK',
-    payload: a,
+    type: ADD_NEW_TASK,
+    payload
   }
 };
 
-export const deleteTask = (id) => {
+export const deleteAllTasks = () => {
   return {
-    type: 'DELETE_TASK',
-    id
+    type: DELETE_TASK
   }
 };
+
+export const deleleTask = ( payload)=> {
+  return {
+    type: DELETE_TASK,
+    payload
+  }
+}

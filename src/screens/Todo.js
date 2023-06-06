@@ -1,55 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, FlatList, Keyboard, TextInput, TouchableOpacity } from "react-native";
-import { addTask, deleteTask, updateTask } from '../redux/TaskSlice';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import TaskView from '../components/TaskView';
-import CustomModalView from '../components/CustomModal';
+import { addTask, deleteTask, initialState, updateTask } from '../redux/Reducer';
+import { useDispatch, useSelector } from 'react-redux';
 import { addNewTask } from '../redux/Actions';
+import ItemView from '../components/ItemView';
 
 
 export default function ToDo(props) {
-    const [task, setTask] = useState("");
-    const [taskList, setTaskList] = useState([]);
-    const [show, setShow] = useState(false);
-    const [updateTask, setUpdateTask] = useState("");
+    const [task, setTask] = useState([]);
     const dispatch = useDispatch();
-    const todos = useSelector(state => state.counter)
+    //Syntax for this hook => useSelector(state => state.myReducer);
+    const dataFromStore = useSelector((state) => state.reducer2);
 
     const addTask = async () => {
         Keyboard.dismiss();
         console.log(task)
         if (task) {
-            setTaskList([...taskList, task]); //ES6
+            let date = new Date();
+            let time = date.getTime();
+            let obj = {
+                id: time,
+                task: task,
+                isDone: false
+            }
+            dispatch(addNewTask(obj));
         } else {
             alert("Please enter a task");
         }
         setTask(null); //This will empty the textbox
-        console.log(taskList);
-        dispatch(addNewTask(taskList));
     };
 
+    const handleDeleteTask = (index) => {
+        console.log(index)
+        dispatch(deleteTask(index));
+    }
 
-    // const addTaskHandler = () => {
-    //     if (task) {
-    //         Keyboard.dismiss();
-    //         if (taskList !== null) {
-    //             taskList.push(task)
-    //         } else {
-    //             setTaskList(task);
-    //         }
-    //     } else {
-    //         alert("Empty field")
-    //     }
-    //     setTask(null); //This will empty the textbox
-    //     console.log(taskList);
-    // };
-    // const deleteHandler = (index) => {
-    //     dispatch(deleteTask(index));
-    // };
-    // const updateHandler = (index) => {
-    //     dispatch(updateTask(index));
-    // }
 
     // const markTaskAsComplete = (index) => {
     //     let itemsCopy = [...taskList];
@@ -66,19 +51,8 @@ export default function ToDo(props) {
             </Text>
             <ScrollView>
                 <View style={styles.item}>
-                    {/* Here our task list will appear */}
-
-                    <ScrollView
-                        keyboardDismissMode="on-drag"
-                        alwaysBounceVertical={true}
-                    >
-                        {todos.map((item, index) => (
-                            <TaskView text={item} key={item}
-                                onLongPress={() => deleteHandler(index)}
-                                onPress={() => updateHandler(index)} />
-                        ))}
-                    </ScrollView>
-
+                    {dataFromStore.map((item, index) => <ItemView text = {item.task}
+                    onLongPress = {() => handleDeleteTask(index)} /> )}
 
                 </View>
             </ScrollView>
@@ -90,10 +64,9 @@ export default function ToDo(props) {
                 <TextInput
                     placeholder="Write your task"
                     onChangeText={(text) => setTask(text)}
-                    value={task}
                     style={styles.input} />
                 <TouchableOpacity
-                    onPress={() => addTask(task)} >
+                    onPress={() => addTask()} >
                     <View style={styles.addWrapper} >
                         <Text style={styles.addText} >
                             +
