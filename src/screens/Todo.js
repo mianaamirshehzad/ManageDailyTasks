@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, FlatList, Keyboard, TextInput, TouchableOpacity } from "react-native";
-import { addTask, deleteTask, initialState, updateTask } from '../redux/Reducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewTask } from '../redux/Actions';
+import { addNewTask, deleleTask } from '../redux/Actions';
 import ItemView from '../components/ItemView';
 
 
 export default function ToDo(props) {
-    const [task, setTask] = useState([]);
+    const [task, setTask] = useState();
     const dispatch = useDispatch();
     //Syntax for this hook => useSelector(state => state.myReducer);
     const dataFromStore = useSelector((state) => state.reducer2);
@@ -18,6 +17,7 @@ export default function ToDo(props) {
         if (task) {
             let date = new Date();
             let time = date.getTime();
+            console.log(`time => ${time}`)
             let obj = {
                 id: time,
                 task: task,
@@ -32,9 +32,13 @@ export default function ToDo(props) {
 
     const handleDeleteTask = (index) => {
         console.log(index)
-        dispatch(deleteTask(index));
+        dispatch(deleleTask(index));
     }
 
+    const handleUpdateTask = (task) => {
+        setTask(task);
+        
+    }
 
     // const markTaskAsComplete = (index) => {
     //     let itemsCopy = [...taskList];
@@ -51,8 +55,12 @@ export default function ToDo(props) {
             </Text>
             <ScrollView>
                 <View style={styles.item}>
-                    {dataFromStore.map((item, index) => <ItemView text = {item.task}
-                    onLongPress = {() => handleDeleteTask(index)} /> )}
+                    {dataFromStore.map((item, index) =>
+                        <ItemView
+                            text={item.task}
+                            key={item.id}
+                            onLongPress={() => handleDeleteTask(index)}
+                            onPress={() => handleUpdateTask(item.task)} />)}
 
                 </View>
             </ScrollView>
@@ -64,6 +72,7 @@ export default function ToDo(props) {
                 <TextInput
                     placeholder="Write your task"
                     onChangeText={(text) => setTask(text)}
+                    value={task}
                     style={styles.input} />
                 <TouchableOpacity
                     onPress={() => addTask()} >

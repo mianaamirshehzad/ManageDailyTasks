@@ -1,24 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit'
-import showToast from '../components/Toast';
-import { ADD_NEW_TASK, DELETE_ALL, DELETE_TASK } from './Constants';
+import { ADD_NEW_TASK, DELETE_ALL, DELETE_TASK, UPDATE_TASK } from './Constants';
 
 const initialState = [
-  { id: 1, task: 'Buy shirt', isDone: false},
-  { id: 2, task: 'Drink Coke', isDone: false},
-  { id: 3, task: 'Sale bike', isDone: false},
 ];
-
 
 export const reducer2 = (state = initialState, action) => {
   switch (action.type) {
     case ADD_NEW_TASK:
-      return [ ...state, action.payload ];
+      return [...state, action.payload];
     case DELETE_ALL:
       return [];
-    case DELETE_TASK: 
-      const itemsAfterDelete = state.filter((todo) => todo.id !== action.payload);
-      return itemsAfterDelete;
-    default: 
+    case DELETE_TASK:
+      let i = action.payload;
+      let newState = [...state];
+      newState.splice(i, 1);
+      return newState;
+    // Alternative method for deleting 
+    // return [...state.slice(0, i), ...state.slice(i + 1)];
+    case UPDATE_TASK: 
+      return [...state, action.payload] 
+    default:
       return state;
   }
 }
