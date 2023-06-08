@@ -20,9 +20,9 @@ export const deleleTask = (id)=> {
   }
 };
 
-export const updateTask = (payload) => {
+export const updateTask = (id, editedTask) => {
   return {
     type: UPDATE_TASK,
-    payload
+    payload: {id, editedTask}
   }
 }

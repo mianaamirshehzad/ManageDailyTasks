@@ -5,6 +5,7 @@ import CustomButton from './CustomButton';
 
 const CustomModalView = (props) => {
     const [update, setUpdate] = useState("")
+    console.log("model: "+ props.value)
     return (
         <Modal
             animationType="slide"
@@ -21,9 +22,10 @@ const CustomModalView = (props) => {
                     Update task
                 </Text>
                 <CustomTextInput
-                    placeholder='Type here...'
-                    onChangeText={props.onChangeText} />
-                <CustomButton text="Update"
+                    placeholder='Update your task...'
+                    onChangeText={props.onChangeText}
+                    value = {props.value} />
+                <CustomButton text="Submit"
                     onPress={props.onPress} />
             </View>
         </Modal>
@@ -36,11 +38,12 @@ const styles = StyleSheet.create({
     },
     modalView: {
         backgroundColor: 'lightblue',
-        margin: 50,
-        width: '70%',
+        margin: 70,
+        width: '90%',
         borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
+        alignSelf: 'center',
         height: '50%',
     },
     title: {

@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, FlatList, Keyboard, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, ScrollView, Text, View, KeyboardAvoidingView, FlatList, Keyboard, TextInput, TouchableOpacity, Image } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewTask, deleleTask } from '../redux/Actions';
+import { addNewTask, deleleTask, updateTask } from '../redux/Actions';
 import ItemView from '../components/ItemView';
+import CustomModalView from '../components/CustomModal';
 
 
 export default function ToDo(props) {
     const [task, setTask] = useState();
+    const [editTask, setEditTask] = useState("");
+    const [beingEdit, setBeingEdit] = useState(false);
+    const [show, setShow] = useState(false);
+    const [currentId, setCurrentId] = useState("");
+    const [currentTask, setCurrentTask] = useState("");
+    const [seletedItem, setSelectedItem] = useState("");
     const dispatch = useDispatch();
-    //Syntax for this hook => useSelector(state => state.myReducer);
-    const dataFromStore = useSelector((state) => state.reducer2);
+    const dataFromStore = useSelector((state) => state.reducer2); //Syntax for this hook => useSelector(state => state.myReducer);
 
     const addTask = async () => {
         Keyboard.dismiss();
-        console.log(task)
+        console.log(`Todo.js => ${task}`)
         if (task) {
             let date = new Date();
             let time = date.getTime();
-            console.log(`time => ${time}`)
             let obj = {
                 id: time,
                 task: task,
@@ -35,24 +40,30 @@ export default function ToDo(props) {
         dispatch(deleleTask(index));
     }
 
-    const handleUpdateTask = (task) => {
-        setTask(task);
-        
+    const startUpdate = (id, task) => {
+        dispatch(updateTask(currentId, currentTask))
+        setShow(false)
+    };
+
+    const handleUpdateTask = (item) => {
+        setCurrentId(item.id)
+        setCurrentTask(item.task);
+        setShow(true);
     }
-
-    // const markTaskAsComplete = (index) => {
-    //     let itemsCopy = [...taskList];
-    //     itemsCopy.splice(index, 1);
-    //     setTaskList(itemsCopy);
-    //     console.log('Task marked as done')
-    // };
-
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
                 Today's Tasks
             </Text>
+            <CustomModalView
+                visible={show}
+                value = {currentTask}
+                currentId={currentId}
+                onPress={() => startUpdate()}
+                onCancel={() => setShow(false)}
+                onChangeText={(text) => setCurrentTask(text)}
+            />
             <ScrollView>
                 <View style={styles.item}>
                     {dataFromStore.map((item, index) =>
@@ -60,11 +71,10 @@ export default function ToDo(props) {
                             text={item.task}
                             key={item.id}
                             onLongPress={() => handleDeleteTask(index)}
-                            onPress={() => handleUpdateTask(item.task)} />)}
-
+                            onPress={() => handleUpdateTask(item)}
+                        />)}
                 </View>
             </ScrollView>
-
             {/* Write a New Task Section */}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -83,7 +93,7 @@ export default function ToDo(props) {
                     </View>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
-        </View>
+        </View >
     );
 }
 
